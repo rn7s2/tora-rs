@@ -24,9 +24,7 @@ cargo run --example xmd_api      # Level-1 行情
 cargo run --example trader_api   # 交易
 ```
 
-绑定层（`src/lib.rs` 与 `wrapper/`）由
-[`tora-rs-generator`](../tora-rs-generator) 从官方 TORA 头文件生成；`build.rs`、
-`Cargo.toml` 与 `lib/` 下的 SDK 为手写/随仓库提供。
+SDK 不随仓库存放——由 `build.rs` 在构建时下载并链接（详见「SDK 与构建」）。
 
 ## Fast 变体
 
@@ -51,8 +49,20 @@ Level-2 行情（`lev2md`）无 fast 变体，始终链接 `lev2mdapi`。
 
 ## SDK 与构建
 
-- SDK（头文件 + Linux `.so` + Windows `.dll`/`.lib`）直接随仓库存放于 `lib/`，
-  构建时无需下载。
+SDK 库体积超过 crates.io 包大小上限，因此**不随 crate 发布**，改由 `build.rs`
+硬编码以下三个 URL、在构建时下载：
+
+| Bundle | URL |
+| ------ | --- |
+| 交易（td） | `https://ctp-api.ruiqilei.com/tora/API_Stock_C++_td v4.1.8_20260422.zip` |
+| Level-1 行情（lv1） | `https://ctp-api.ruiqilei.com/tora/Api_Stock_lv1_C++_md v1.0.9_20250825.zip` |
+| Level-2 行情（lv2） | `https://ctp-api.ruiqilei.com/tora/API_Stock_lv2_C++ v4.0.8_20251126.zip` |
+
+- 首次构建时 `build.rs` 下载三个 bundle，把头文件 + Linux `.so` + Windows `x64`
+  的 `.dll`/`.lib` 解压到 `$OUT_DIR/lib` 并据此链接。
+- 解压依赖系统工具：macOS / Linux 用 `curl` + `unzip`，Windows 用 `curl.exe` +
+  `tar.exe`（Windows 10 1803+ 自带）。最小 Linux 镜像需 `apt-get install -y curl unzip`。
+  构建机器必须可访问 `ctp-api.ruiqilei.com`。
 - `build.rs` 把所链接的动态库复制到可执行文件同目录，Linux 下并设置
   `-rpath,$ORIGIN`，因此产出的二进制可直接运行。
 - 需要 C++ 编译器（Linux: g++；Windows: MSVC）。Linux 的 GBK 转换走 glibc 自带的

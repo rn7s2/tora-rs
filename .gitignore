@@ -1,2 +1,5 @@
 /target
 .DS_Store
+# The TORA SDK is no longer vendored — build.rs downloads it into $OUT_DIR/lib.
+# Ignore any local lib/ a developer might extract for offline builds.
+/lib
