@@ -1,5 +1,10 @@
 # tora-rs
 
+[![GitHub](https://img.shields.io/badge/GitHub-rn7s2/tora--rs-green&logo=github)](https://github.com/rn7s2/tora-rs)
+[![Rust](https://github.com/rn7s2/tora-rs/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/rn7s2/tora-rs/actions/workflows/rust.yml)
+[![Crate](https://img.shields.io/crates/v/tora-rs.svg)](https://crates.io/crates/tora-rs)
+[![API](https://docs.rs/tora-rs/badge.svg)](https://docs.rs/tora-rs)
+
 TORA STP（华鑫奇点）证券交易系统 C++ 接口的安全、符合 Rust 惯用法的绑定。支持
 Linux 与 Windows（TORA 无 macOS 版本）。
 
@@ -32,12 +37,12 @@ TORA 为交易与 Level-1 行情各提供一个低延迟「fast」实现。它�
 **ABI 完全一致**（导出相同的 `CTORATstp*Api` 符号），因此切换只是改变链接的动态库。
 通过 Cargo feature 独立选择：
 
-| Feature        | 交易库链接        | 行情库链接（XMd） |
-| -------------- | ----------------- | ----------------- |
-| *(默认)*       | `traderapi`       | `xmdapi`          |
-| `fast-trader`  | **`fasttraderapi`** | `xmdapi`        |
-| `fast-xmd`     | `traderapi`       | **`xfastmdapi`**  |
-| `fast`         | **`fasttraderapi`** | **`xfastmdapi`** |
+| Feature       | 交易库链接          | 行情库链接（XMd） |
+| ------------- | ------------------- | ----------------- |
+| _(默认)_      | `traderapi`         | `xmdapi`          |
+| `fast-trader` | **`fasttraderapi`** | `xmdapi`          |
+| `fast-xmd`    | `traderapi`         | **`xfastmdapi`**  |
+| `fast`        | **`fasttraderapi`** | **`xfastmdapi`**  |
 
 ```sh
 cargo build --features fast-xmd                 # 只让行情走 fast
@@ -52,11 +57,11 @@ Level-2 行情（`lev2md`）无 fast 变体，始终链接 `lev2mdapi`。
 SDK 库体积超过 crates.io 包大小上限，因此**不随 crate 发布**，改由 `build.rs`
 硬编码以下三个 URL、在构建时下载：
 
-| Bundle | URL |
-| ------ | --- |
-| 交易（td） | `https://ctp-api.ruiqilei.com/tora/API_Stock_C++_td v4.1.8_20260422.zip` |
+| Bundle              | URL                                                                          |
+| ------------------- | ---------------------------------------------------------------------------- |
+| 交易（td）          | `https://ctp-api.ruiqilei.com/tora/API_Stock_C++_td v4.1.8_20260422.zip`     |
 | Level-1 行情（lv1） | `https://ctp-api.ruiqilei.com/tora/Api_Stock_lv1_C++_md v1.0.9_20250825.zip` |
-| Level-2 行情（lv2） | `https://ctp-api.ruiqilei.com/tora/API_Stock_lv2_C++ v4.0.8_20251126.zip` |
+| Level-2 行情（lv2） | `https://ctp-api.ruiqilei.com/tora/API_Stock_lv2_C++ v4.0.8_20251126.zip`    |
 
 - 首次构建时 `build.rs` 下载三个 bundle，把头文件 + Linux `.so` + Windows `x64`
   的 `.dll`/`.lib` 解压到 `$OUT_DIR/lib` 并据此链接。
