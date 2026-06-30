@@ -1,0 +1,31 @@
+[package]
+authors = ["Ruiqi Lei <Rn7s2@outlook.com>"]
+categories = ["api-bindings", "finance"]
+description = "Safe & idiomatic Rust bindings for TORA STP (华鑫奇点); Linux/Windows"
+edition = "2024"
+keywords = ["tora", "stock", "trading", "tora2rs", "quant"]
+license = "MIT"
+name = "tora-rs"
+readme = "README.md"
+repository = "https://github.com/rn7s2/tora-rs.git"
+version = "0.1.0"
+
+[features]
+# By default the standard (non-fast) variants are linked for both families.
+default = []
+# Link the low-latency `fasttraderapi` instead of `traderapi` for the trader API.
+fast-trader = []
+# Link the low-latency `xfastmdapi` instead of `xmdapi` for the Level-1 MD API.
+fast-xmd = []
+# Convenience: enable both fast variants at once.
+fast = ["fast-trader", "fast-xmd"]
+
+[dependencies]
+cxx = "1.0"
+
+[build-dependencies]
+cxx-build = "1.0"
+
+[package.metadata.docs.rs]
+# Generated cxx wrapper only type-checks on the SDK's real platforms.
+targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]

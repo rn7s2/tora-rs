@@ -1,0 +1,32 @@
+name: Rust
+
+on:
+  push:
+    branches: ["master", "main"]
+  pull_request:
+    branches: ["master", "main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+# TORA ships only Linux + Windows binaries (no macOS).
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features: ["", "fast-xmd", "fast-trader", "fast-xmd,fast-trader"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --examples --features "${{ matrix.features }}" --verbose
+
+  build-win:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        features: ["", "fast-xmd", "fast-trader", "fast-xmd,fast-trader"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --examples --features "${{ matrix.features }}" --verbose
